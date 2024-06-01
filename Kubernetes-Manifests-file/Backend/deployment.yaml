@@ -22,14 +22,14 @@ spec:
         role: api
     spec:
       imagePullSecrets:
-      - name: ecr-registry-secret
+      - name: dockerhub-registry-secret
       containers:
       - name: api
-        image: 407622020962.dkr.ecr.us-east-1.amazonaws.com/backend:latest
+        image: shubhamshinde2025/threebackend:latest
         imagePullPolicy: Always
         env:
           - name: MONGO_CONN_STR
-            value: mongodb://mongodb-svc:27017/todo?directConnection=true
+            value: mongodb+srv://shubhamssc100:EbFiDLczIbS0nJVe@project0.gystw8r.mongodb.net/project0
           - name: MONGO_USERNAME
             valueFrom:
               secretKeyRef:
@@ -41,17 +41,17 @@ spec:
                 name: mongo-sec
                 key: password
         ports:
-        - containerPort: 3500
+        - containerPort: 5000
         livenessProbe: 
           httpGet:
             path: /ok
-            port: 3500
+            port: 5000
           initialDelaySeconds: 2
           periodSeconds: 5
         readinessProbe:
           httpGet:
             path: /ok
-            port: 3500
+            port: 5000
           initialDelaySeconds: 5
           periodSeconds: 5
           successThreshold: 1
