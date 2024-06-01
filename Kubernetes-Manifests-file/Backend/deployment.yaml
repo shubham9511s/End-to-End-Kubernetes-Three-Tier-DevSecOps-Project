@@ -25,7 +25,7 @@ spec:
       - name: dockerhub-registry-secret
       containers:
       - name: api
-        image: shubhamshinde2025/threebackend:latest
+        image: shubhamshinde2025/threebackend:v1
         imagePullPolicy: Always
         env:
           - name: MONGO_CONN_STR

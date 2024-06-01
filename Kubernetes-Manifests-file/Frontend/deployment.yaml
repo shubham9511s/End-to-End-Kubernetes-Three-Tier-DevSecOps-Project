@@ -25,7 +25,7 @@ spec:
       - name: dockerhub-registry-secret
       containers:
       - name: frontend
-        image: shubhamshinde2025/threefrontend:latest
+        image: shubhamshinde2025/threefrontend:v1
         imagePullPolicy: Always
         env:
           - name: REACT_APP_BACKEND_URL
