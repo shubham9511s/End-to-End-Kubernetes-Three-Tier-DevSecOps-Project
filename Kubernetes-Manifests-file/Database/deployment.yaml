@@ -4,7 +4,7 @@ metadata:
   namespace: three-tier
   name: mongodb
 spec: 
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: mongodb
@@ -15,7 +15,7 @@ spec:
     spec: 
       containers:
       - name: mon
-        image: mongo:6.0
+        image: mongo:6.0.8
         command:
             - "numactl"
             - "--interleave=all"
