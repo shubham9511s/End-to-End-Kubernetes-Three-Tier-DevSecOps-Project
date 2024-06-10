@@ -70,13 +70,13 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata: 
-  name: api
+  name: backend
   namespace: three-tier
   labels: 
-    role: api
+    app: api
     env: demo
 spec: 
-  replicas: 2
+  replicas: 1
   strategy: 
     type: RollingUpdate
     rollingUpdate:
@@ -84,17 +84,17 @@ spec:
       maxUnavailable: 25%
   selector: 
     matchLabels:
-      role: api
+      app: api
   template:
     metadata:
       labels:
-        role: api
+        app: api
     spec:
       imagePullSecrets:
       - name: dockerhub-registry-secret
       containers:
-      - name: api
-        image: shubhamshinde2025/threebackend:v5
+      - name: backend
+        image: shubhamshinde2025/threebackend:v6
         imagePullPolicy: Always
         env:
           - name: MONGO_URL
@@ -112,28 +112,12 @@ spec:
               secretKeyRef:
                 name: mongo-sec
                 key: password
-        ports:
-        - containerPort: 5000
-        livenessProbe: 
-          httpGet:
-            path: /ok
-            port: 5000
-          initialDelaySeconds: 2
-          periodSeconds: 5
-        readinessProbe:
-          httpGet:
-            path: /ok
-            port: 5000
-          initialDelaySeconds: 5
-          periodSeconds: 5
-          successThreshold: 1
-
 ---
 
 apiVersion: v1
 kind: Service
 metadata:
-  name: api
+  name: backend-svc
   namespace: three-tier
 spec: 
   ports:
@@ -141,7 +125,7 @@ spec:
     targetPort: 5000
     protocol: TCP
   selector:
-    role: api
+    app: api
 
 ---
 
@@ -151,10 +135,10 @@ metadata:
   name: frontend
   namespace: three-tier
   labels:
-    role: frontend
+    app: frontend
     env: demo
 spec: 
-  replicas: 4
+  replicas: 2
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -162,21 +146,21 @@ spec:
       maxUnavailable: 25%
   selector:
     matchLabels: 
-      role: frontend
+      app: frontend
   template:
     metadata:
       labels:
-        role: frontend
+        app: frontend
     spec: 
       imagePullSecrets:
       - name: dockerhub-registry-secret
       containers:
       - name: frontend
-        image: shubhamshinde2025/threefrontend:v5
+        image: shubhamshinde2025/threefrontend:v6
         imagePullPolicy: Always
         env:
           - name: REACT_APP_BACKEND_URL
-            value: "http://51.20.115.7:5000/api/tasks"
+            value: "http://13.48.70.247:5000/api/tasks"
         ports:
         - containerPort: 3000
 
@@ -185,7 +169,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata: 
-  name: frontend
+  name: frontend-svc
   namespace: three-tier
 spec:
   type: NodePort
@@ -194,7 +178,7 @@ spec:
     targetPort: 3000
     protocol: TCP
   selector:
-    role: frontend
+    app: frontend
 
 
 
