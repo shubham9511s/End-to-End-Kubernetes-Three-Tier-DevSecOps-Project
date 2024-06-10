@@ -28,7 +28,7 @@ spec:
     spec: 
       containers:
       - name: mon
-        image: mongo:latest
+        image: mongo
         ports:
         - containerPort: 27017
         env: 
@@ -94,7 +94,7 @@ spec:
       - name: dockerhub-registry-secret
       containers:
       - name: api
-        image: shubhamshinde2025/threebackend:latest
+        image: shubhamshinde2025/threebackend:v5
         imagePullPolicy: Always
         env:
           - name: MONGO_URL
@@ -140,7 +140,6 @@ spec:
   - port: 5000
     targetPort: 5000
     protocol: TCP
-  type: NodePort
   selector:
     role: api
 
@@ -173,11 +172,11 @@ spec:
       - name: dockerhub-registry-secret
       containers:
       - name: frontend
-        image: shubhamshinde2025/threefrontend:latest
+        image: shubhamshinde2025/threefrontend:v5
         imagePullPolicy: Always
         env:
           - name: REACT_APP_BACKEND_URL
-            value: "http://16.170.202.128:5000/api/tasks"
+            value: "http://51.20.115.7:5000/api/tasks"
         ports:
         - containerPort: 3000
 
@@ -189,11 +188,11 @@ metadata:
   name: frontend
   namespace: three-tier
 spec:
+  type: NodePort
   ports:
   - port: 3000
     targetPort: 3000
     protocol: TCP
-  type: NodePort
   selector:
     role: frontend
 
