@@ -90,11 +90,9 @@ spec:
       labels:
         app: api
     spec:
-      imagePullSecrets:
-      - name: dockerhub-registry-secret
       containers:
       - name: backend
-        image: shubhamshinde2025/threebackend:v6
+        image: shubhamshinde2025/threebackend:v7
         imagePullPolicy: Always
         env:
           - name: MONGO_URL
@@ -152,11 +150,9 @@ spec:
       labels:
         app: frontend
     spec: 
-      imagePullSecrets:
-      - name: dockerhub-registry-secret
       containers:
       - name: frontend
-        image: shubhamshinde2025/threefrontend:v6
+        image: shubhamshinde2025/threefrontend:v7
         imagePullPolicy: Always
         env:
           - name: REACT_APP_BACKEND_URL
