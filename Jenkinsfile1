@@ -8,19 +8,19 @@ pipeline {
         SONAR_HOME= tool 'sonar'
     }
 
-    stage('Cleaning WorkSpace') {
+    stages {
+          stage('Cleaning WorkSpace') {
             steps {
                 cleanWs()
             }
         }
-    stages {
         stage('Git-checkout Repo-I') {
             steps {
                 echo 'Git checkout'
                git changelog: false, poll: false, url: 'https://github.com/shubham9511s/End-to-End-Kubernetes-Three-Tier-DevSecOps-Project.git'
             }
         }
-    stage('static code quality check') {
+     stage('static code quality check') {
             steps {
                 dir('Application-Code/frontend'){
                   echo 'Sonarqube scan Frontend start'
