@@ -7,13 +7,12 @@ pipeline {
      environment{
         SONAR_HOME= tool 'sonar'
     }
-
+    stages {
     stage('Cleaning WorkSpace') {
             steps {
                 cleanWs()
             }
         }
-    stages {
         stage('Git-checkout Repo-I') {
             steps {
                 echo 'Git checkout'
