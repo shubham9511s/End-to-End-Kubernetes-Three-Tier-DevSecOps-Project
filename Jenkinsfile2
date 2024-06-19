@@ -29,8 +29,7 @@ pipeline {
                 }
             }
         }
-    
-      stage("Docker Image Build and push") {
+     stage("Docker Image Build and push") {
               environment {
                             DOCKER_IMAGE = "shubhamshinde2206/todobackend:${BUILD_NUMBER}"
              }
