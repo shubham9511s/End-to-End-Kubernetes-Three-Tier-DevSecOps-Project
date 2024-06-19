@@ -1,0 +1,84 @@
+pipeline {
+    agent any
+    
+    tools{
+        nodejs 'node20'
+    }
+     environment{
+        SONAR_HOME= tool 'sonar'
+    }
+    stages {
+    stage('Cleaning WorkSpace') {
+            steps {
+                cleanWs()
+            }
+        }
+        stage('Git-checkout Repo-I') {
+            steps {
+                echo 'Git checkout'
+               git changelog: false, poll: false, url: 'https://github.com/shubham9511s/End-to-End-Kubernetes-Three-Tier-DevSecOps-Project.git'
+            }
+        }
+    stage('static code quality check') {
+            steps {
+                dir('Application-Code/backend'){
+                  echo 'Sonarqube scan backend start'
+                 withSonarQubeEnv('sonar-server') {
+                    sh"$SONAR_HOME/bin/sonar-scanner -Dsonar.projectName=backend -Dsonar.projectKey=backend"   
+                }
+                }
+            }
+        }
+    
+      stage("Docker Image Build and push") {
+              environment {
+                            DOCKER_IMAGE = "shubhamshinde2206/todobackend:${BUILD_NUMBER}"
+             }
+            steps {
+                script {
+                     dir('Application-Code/backend'){
+                     withDockerRegistry(credentialsId: 'docker-token', toolName: 'docker'){
+                     sh 'docker build -t ${DOCKER_IMAGE} .'
+                     def dockerImage = docker.image("${DOCKER_IMAGE}")
+                     dockerImage.push()
+                      
+                  }
+                     }
+                    
+                }
+            }
+        }
+        
+        stage('Checkout Code from Manifest Repo-II') {
+            steps {
+                    git branch: 'main', changelog: false, poll: false, url: 'https://github.com/shubham9511s/manifest-file.git'
+            }
+        }
+        stage('Update Deployment file') {
+            environment {
+                GIT_REPO_NAME = "manifest-file"
+                GIT_USER_NAME = "shubham9511s"
+                REPO_IMAGE_NAME = "shubhamshinde2206/todobackend"
+            }
+            steps {
+                   withCredentials([string(credentialsId: 'github-token', variable: 'TOKEN')]) {
+                        sh '''
+                            git config user.email "shubham.ssc100@gmail.com"
+                            git config user.name "shubham9511s"
+                            BUILD_NUMBER=${BUILD_NUMBER}
+                            echo $BUILD_NUMBER
+                            imageTag=$(grep -oP '(?<=todobackend:)[^ ]+' todo-manifest/backend.yml)
+                            echo $imageTag
+                            sed -i "s|${REPO_IMAGE_NAME}:${imageTag}|${REPO_IMAGE_NAME}:${BUILD_NUMBER}|" todo-manifest/backend.yml
+                            git add todo-manifest/backend.yml
+                            git commit -m "Update deployment Image to version \${BUILD_NUMBER}"
+                            git push https://${TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME} HEAD:main
+                        '''
+                    }
+                }
+            }
+        
+        
+        
+    }
+}
