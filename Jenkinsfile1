@@ -17,7 +17,7 @@ pipeline {
         stage('Git-checkout Repo-I') {
             steps {
                 echo 'Git checkout'
-               
+               git changelog: false, poll: false, url: 'https://github.com/shubham9511s/End-to-End-Kubernetes-Three-Tier-DevSecOps-Project.git'
             }
         }
     stage('static code quality check') {
