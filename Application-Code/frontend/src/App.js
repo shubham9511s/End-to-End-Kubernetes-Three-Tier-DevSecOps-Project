@@ -11,7 +11,7 @@ class App extends Tasks {
         return (
             <div className="app">
                 <header className="app-header">
-                    <h1>DevOps LIST</h1>
+                    <h1>DevOps-GitOps LIST</h1>
                 </header>
                 <div className="main-content">
                     <Paper elevation={3} className="todo-container">
